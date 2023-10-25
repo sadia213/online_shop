@@ -1,0 +1,55 @@
+<?php
+session_start();
+if($_SESSION['admin_login_status']!="logged in" and ! isset($_SESSION['user_name'])){
+header("Location:../Login.php");}
+//logout code
+if(isset($_GET['sign']) and $_GET['sign']=="out"){
+$_SESSION['admin_login_status']="logged out";
+unset($_SESSION['user_name']);
+header("Location:../Login.php");
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<title>History</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<ul>
+  <li><a href="home.php">Home</a></li>
+  <li><a href="addproducts.php">Add Products</a></li>
+  <li><a href="store.php">Store</a></li>
+  <li><a href="corders.php">Customer Orders</a></li>
+  <li><a class="active" href="history.php">History</a></li>
+  <li><a href="chngpass.php">Change password</a></li>
+  <li><a href="?sign=out">Logout</a></li>
+</ul><br>
+<div class="container">
+<div class="row">
+<?php
+include("../connection.php");
+$sql="select * from customer_order where status=0 order by order_date desc";
+$r=mysqli_query($con,$sql);
+echo "<table id='customers'>";
+echo "<tr>
+    <th>Order id</th>
+    <th>Username</th>
+    <th>Order date</th>
+    </tr>";
+    while($row=mysqli_fetch_array($r))
+    {
+      $oid=$row['order_id'];
+      $username=$row['username'];
+      $odate=$row['order_date'];
+      echo "<tr>
+      <td>$oid</td><td>$username</td><td>$odate</td>
+      </tr>";
+    }
+    echo "</table>";
+?>
+</div>
+</div>
+</body>
+</html>
